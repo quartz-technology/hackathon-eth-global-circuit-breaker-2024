@@ -19,13 +19,22 @@ contract ShadowGroup {
 
     Transaction[] public transactions;
 
+    modifier txExists(uint _txIndex) {
+        require(_txIndex < transactions.length, "tx does not exist");
+        _;
+    }
+
+    modifier notExecuted(uint _txIndex) {
+        require(!transactions[_txIndex].executed, "tx already executed");
+        _;
+    }
+
     constructor(
         address _semaphoreAddress,
         uint256 _groupID,
         uint256[] memory _ownersIdentityCommitments,
         uint256 _quorum
     ) {
-        // TODO: Check if the quorum valid.
         require(
             _ownersIdentityCommitments.length > 0,
             "at least one owner identity commitment is required to create the ShadowGroup"
@@ -75,10 +84,7 @@ contract ShadowGroup {
         uint256 _nullifierHash,
         uint256 _externalNullifier,
         uint256[8] calldata _proof
-    ) public {
-        require(_txIndex < transactions.length, "tx does not exist");
-        require(!transactions[_txIndex].executed, "tx already executed");
-
+    ) txExists(_txIndex) notExecuted(_txIndex) public {
         uint256 signal = uint256(keccak256(abi.encodePacked(true)));
         semaphore.verifyProof(groupID, _merkleTreeRoot, signal, _nullifierHash, _externalNullifier, _proof);
 
@@ -91,9 +97,7 @@ contract ShadowGroup {
         uint256 _nullifierHash,
         uint256 _externalNullifier,
         uint256[8] calldata _proof
-    ) public {
-        require(_txIndex < transactions.length, "tx does not exist");
-        require(!transactions[_txIndex].executed, "tx already executed");
+    ) txExists(_txIndex) notExecuted(_txIndex) public {
         require(transactions[_txIndex].numConfirmations > 0, "tx has no confirmations yet");
 
         uint256 signal = uint256(keccak256(abi.encodePacked(false)));
@@ -102,12 +106,8 @@ contract ShadowGroup {
         transactions[_txIndex].numConfirmations -= 1;
     }
 
-    function executeTransaction(uint _txIndex) public {
-        require(_txIndex < transactions.length, "tx does not exist");
-
+    function executeTransaction(uint _txIndex) txExists(_txIndex) notExecuted(_txIndex) public {
         Transaction storage transaction = transactions[_txIndex];
-
-        require(!transaction.executed, "tx already executed");
         require(transaction.numConfirmations >= quorum, "cannot execute tx");
 
         transaction.executed = true;
