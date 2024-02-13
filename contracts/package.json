@@ -26,7 +26,8 @@
     "test:report-gas": "REPORT_GAS=true hardhat test",
     "test:coverage": "hardhat coverage",
     "typechain": "hardhat typechain",
-    "prepublish": "tar -czf files.tgz .gitignore"
+    "prepublish": "tar -czf files.tgz .gitignore",
+    "lint": "solhint 'contracts/**/*.sol'"
   },
   "devDependencies": {
     "@ethersproject/abi": "^5.4.7",
@@ -53,6 +54,7 @@
     "ethers": "^5.4.7",
     "hardhat": "^2.11.0",
     "hardhat-gas-reporter": "^1.0.8",
+    "solhint": "^4.1.1",
     "solidity-coverage": "^0.8.1",
     "ts-node": ">=8.0.0",
     "typechain": "^8.1.0",
