@@ -11,7 +11,7 @@ contract ShadowGroup {
 
     struct Transaction {
         address to;
-        uint value;
+        uint256 value;
         bytes data;
         bool executed;
         uint numConfirmations;
