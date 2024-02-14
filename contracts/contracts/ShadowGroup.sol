@@ -4,6 +4,11 @@ pragma solidity 0.8.4;
 import "@semaphore-protocol/contracts/interfaces/ISemaphore.sol";
 
 contract ShadowGroup {
+    error TxDoesNotExist();
+    error TxAleadyExecuted();
+    error InvalidQuorum();
+    error QuorumNotReached();
+
     ISemaphore public semaphore;
     uint256 public groupID;
 
@@ -20,12 +25,12 @@ contract ShadowGroup {
     Transaction[] public transactions;
 
     modifier txExists(uint _txIndex) {
-        require(_txIndex < transactions.length, "tx does not exist");
+        if (_txIndex >= transactions.length) revert TxDoesNotExist();
         _;
     }
 
-    modifier notExecuted(uint _txIndex) {
-        require(!transactions[_txIndex].executed, "tx already executed");
+    modifier txNotExecuted(uint _txIndex) {
+        if (transactions[_txIndex].executed) revert TxAleadyExecuted();
         _;
     }
 
@@ -39,10 +44,10 @@ contract ShadowGroup {
             _ownersIdentityCommitments.length > 0,
             "at least one owner identity commitment is required to create the ShadowGroup"
         );
-        require(
-            _quorum > 0 && _quorum <= _ownersIdentityCommitments.length,
-            "invalid quorum value"
-        );
+
+        if (_quorum == 0 || _quorum > _ownersIdentityCommitments.length) {
+            revert InvalidQuorum();
+        }
 
         semaphore = ISemaphore(_semaphoreAddress);
         groupID = _groupID;
@@ -84,7 +89,7 @@ contract ShadowGroup {
         uint256 _nullifierHash,
         uint256 _externalNullifier,
         uint256[8] calldata _proof
-    ) txExists(_txIndex) notExecuted(_txIndex) public {
+    ) txExists(_txIndex) txNotExecuted(_txIndex) public {
         uint256 signal = uint256(keccak256(abi.encodePacked(true)));
         semaphore.verifyProof(groupID, _merkleTreeRoot, signal, _nullifierHash, _externalNullifier, _proof);
 
@@ -97,7 +102,7 @@ contract ShadowGroup {
         uint256 _nullifierHash,
         uint256 _externalNullifier,
         uint256[8] calldata _proof
-    ) txExists(_txIndex) notExecuted(_txIndex) public {
+    ) txExists(_txIndex) txNotExecuted(_txIndex) public {
         require(transactions[_txIndex].numConfirmations > 0, "tx has no confirmations yet");
 
         uint256 signal = uint256(keccak256(abi.encodePacked(false)));
@@ -106,9 +111,9 @@ contract ShadowGroup {
         transactions[_txIndex].numConfirmations -= 1;
     }
 
-    function executeTransaction(uint _txIndex) txExists(_txIndex) notExecuted(_txIndex) public {
+    function executeTransaction(uint _txIndex) txExists(_txIndex) txNotExecuted(_txIndex) public {
         Transaction storage transaction = transactions[_txIndex];
-        require(transaction.numConfirmations >= quorum, "cannot execute tx");
+        if (transaction.numConfirmations < quorum) revert QuorumNotReached();
 
         transaction.executed = true;
 

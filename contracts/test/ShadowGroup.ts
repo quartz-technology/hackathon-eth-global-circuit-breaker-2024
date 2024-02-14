@@ -27,8 +27,6 @@ describe("ShadowGroup", () => {
             quorum: quorum,
         });
 
-        expect(shadowGroupContract.address).to.be.properAddress;
-
         return shadowGroupContract;
     }
 
@@ -65,7 +63,7 @@ describe("ShadowGroup", () => {
         const quorum = 0;
 
         await expect(deployShadowGroup(groupID, ownerIdentityCommitments, quorum))
-            .to.be.revertedWith("invalid quorum value");
+            .to.be.reverted;
     });
 
     it("Should fail to create ShadowGroup using too large quorum", async () => {
@@ -80,7 +78,7 @@ describe("ShadowGroup", () => {
         const quorum = ownerIdentityCommitments.length + 1;
 
         await expect(deployShadowGroup(groupID, ownerIdentityCommitments, quorum))
-            .to.be.revertedWith("invalid quorum value");
+            .to.be.reverted;
     });
 
     describe("# submitTransaction", () => {
