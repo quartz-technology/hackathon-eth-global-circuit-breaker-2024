@@ -69,12 +69,13 @@ contract ShadowGroup {
         bytes memory _data,
         uint256 _merkleTreeRoot,
         uint256 _nullifierHash,
-        uint256 _externalNullifier,
         uint256[8] calldata _proof
     ) public {
         uint256 signal = uint256(keccak256(abi.encodePacked(_to, _value, _data)));
+        // TODO: Explain why the externalNullifier is calculated this way (using the transacitons.len as a challenge).
+        uint256 externalNullifier = uint256(keccak256(abi.encodePacked(transactions.length, signal)));
 
-        semaphore.verifyProof(groupID, _merkleTreeRoot, signal, _nullifierHash, _externalNullifier, _proof);
+        semaphore.verifyProof(groupID, _merkleTreeRoot, signal, _nullifierHash, externalNullifier, _proof);
 
         transactions.push(Transaction({
             to: _to,

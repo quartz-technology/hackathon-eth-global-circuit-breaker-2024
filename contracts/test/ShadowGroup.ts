@@ -107,7 +107,7 @@ describe("ShadowGroup", () => {
             const _data = "0x";
             const signal = ethers.utils.keccak256(ethers.utils.solidityPack(["address", "uint256", "bytes"], [_to, _value, _data]));
    
-            const externalNullifier = ethers.utils.keccak256(randomBytes(32));
+            const externalNullifier = ethers.utils.keccak256(ethers.utils.solidityPack(["uint", "uint256"], [0, signal]));
 
             const fullProof = await generateProof(ownerIdentityCommitments[0], group, externalNullifier, signal, {
                 wasmFilePath,
@@ -120,7 +120,6 @@ describe("ShadowGroup", () => {
                 _data,
                 fullProof.merkleTreeRoot,
                 fullProof.nullifierHash,
-                externalNullifier,
                 fullProof.proof
             );
     
@@ -138,7 +137,7 @@ describe("ShadowGroup", () => {
             const _data = "0x";
             const signal = ethers.utils.keccak256(ethers.utils.solidityPack(["address", "uint256", "bytes"], [_to, _value, _data]));
 
-            const externalNullifier = ethers.utils.keccak256(randomBytes(32));
+            const externalNullifier = ethers.utils.keccak256(ethers.utils.solidityPack(["uint", "uint256"], [1, signal]));
     
             const fullProof = await generateProof(ownerIdentityCommitments[0], group, externalNullifier, signal, {
                 wasmFilePath,
@@ -151,7 +150,6 @@ describe("ShadowGroup", () => {
                 _data,
                 fullProof.merkleTreeRoot,
                 fullProof.nullifierHash,
-                externalNullifier,
                 fullProof.proof
             );
     
@@ -169,7 +167,7 @@ describe("ShadowGroup", () => {
             const _data = "0x";
             const signal = ethers.utils.keccak256(ethers.utils.solidityPack(["address", "uint256", "bytes"], [_to, _value, _data]));
 
-            const externalNullifier = ethers.utils.keccak256(randomBytes(32));
+            const externalNullifier = ethers.utils.keccak256(ethers.utils.solidityPack(["uint", "uint256"], [0, signal]));
 
             const invalidIdentity = new Identity();
             group.addMember(invalidIdentity.commitment);
@@ -185,7 +183,6 @@ describe("ShadowGroup", () => {
                 _data,
                 fullProof.merkleTreeRoot,
                 fullProof.nullifierHash,
-                externalNullifier,
                 fullProof.proof
             )).to.be.revertedWith("Semaphore__MerkleTreeRootIsNotPartOfTheGroup()");
         });
@@ -215,7 +212,7 @@ describe("ShadowGroup", () => {
             const _data = "0x";
             const signal = ethers.utils.keccak256(ethers.utils.solidityPack(["address", "uint256", "bytes"], [_to, _value, _data]));
    
-            const externalNullifier = ethers.utils.keccak256(randomBytes(32));
+            const externalNullifier = ethers.utils.keccak256(ethers.utils.solidityPack(["uint", "uint256"], [0, signal]));
 
             const fullProof = await generateProof(ownerIdentityCommitments[0], group, externalNullifier, signal, {
                 wasmFilePath,
@@ -228,7 +225,6 @@ describe("ShadowGroup", () => {
                 _data,
                 fullProof.merkleTreeRoot,
                 fullProof.nullifierHash,
-                externalNullifier,
                 fullProof.proof
             );
         });
@@ -314,7 +310,7 @@ describe("ShadowGroup", () => {
             const _data = "0x";
             const signal = ethers.utils.keccak256(ethers.utils.solidityPack(["address", "uint256", "bytes"], [_to, _value, _data]));
    
-            const externalNullifier = ethers.utils.keccak256(randomBytes(32));
+            const externalNullifier = ethers.utils.keccak256(ethers.utils.solidityPack(["uint", "uint256"], [0, signal]));
 
             const fullProof = await generateProof(ownerIdentityCommitments[0], group, externalNullifier, signal, {
                 wasmFilePath,
@@ -327,7 +323,6 @@ describe("ShadowGroup", () => {
                 _data,
                 fullProof.merkleTreeRoot,
                 fullProof.nullifierHash,
-                externalNullifier,
                 fullProof.proof
             );
 
@@ -425,7 +420,7 @@ describe("ShadowGroup", () => {
             const _data = "0x";
             const signal = ethers.utils.keccak256(ethers.utils.solidityPack(["address", "uint256", "bytes"], [_to, _value, _data]));
 
-            const externalNullifier = ethers.utils.keccak256(randomBytes(32));
+            const externalNullifier = ethers.utils.keccak256(ethers.utils.solidityPack(["uint", "uint256"], [0, signal]));
 
             const fullProof = await generateProof(ownerIdentityCommitments[0], group, externalNullifier, signal, {
                 wasmFilePath,
@@ -438,7 +433,6 @@ describe("ShadowGroup", () => {
                 _data,
                 fullProof.merkleTreeRoot,
                 fullProof.nullifierHash,
-                externalNullifier,
                 fullProof.proof
             );
 
