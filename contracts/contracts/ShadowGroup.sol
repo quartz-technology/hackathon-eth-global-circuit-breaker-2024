@@ -90,11 +90,12 @@ contract ShadowGroup {
         uint _txIndex,
         uint256 _merkleTreeRoot,
         uint256 _nullifierHash,
-        uint256 _externalNullifier,
         uint256[8] calldata _proof
     ) txExists(_txIndex) txNotExecuted(_txIndex) public {
         uint256 signal = uint256(keccak256(abi.encodePacked(true)));
-        semaphore.verifyProof(groupID, _merkleTreeRoot, signal, _nullifierHash, _externalNullifier, _proof);
+        uint256 externalNullifier = uint256(keccak256(abi.encodePacked(_txIndex, signal)));
+
+        semaphore.verifyProof(groupID, _merkleTreeRoot, signal, _nullifierHash, externalNullifier, _proof);
 
         transactions[_txIndex].numConfirmations += 1;
     }
@@ -103,11 +104,12 @@ contract ShadowGroup {
         uint _txIndex,
         uint256 _merkleTreeRoot,
         uint256 _nullifierHash,
-        uint256 _externalNullifier,
         uint256[8] calldata _proof
     ) txExists(_txIndex) txNotExecuted(_txIndex) public {
         uint256 signal = uint256(keccak256(abi.encodePacked(false)));
-        semaphore.verifyProof(groupID, _merkleTreeRoot, signal, _nullifierHash, _externalNullifier, _proof);
+        uint256 externalNullifier = uint256(keccak256(abi.encodePacked(_txIndex, signal)));
+
+        semaphore.verifyProof(groupID, _merkleTreeRoot, signal, _nullifierHash, externalNullifier, _proof);
 
         transactions[_txIndex].numRevocations += 1;
     }

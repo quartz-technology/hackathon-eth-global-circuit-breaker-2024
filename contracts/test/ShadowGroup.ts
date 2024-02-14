@@ -246,7 +246,7 @@ describe("ShadowGroup", () => {
                     zkeyFilePath
                 });
 
-                await shadowGroupContract.confirmTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof);
+                await shadowGroupContract.confirmTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, fullProof.proof);
 
                 const transaction = await shadowGroupContract.transactions(0);
                 expect(transaction.to).to.eq(_to);
@@ -267,7 +267,7 @@ describe("ShadowGroup", () => {
                     zkeyFilePath
                 });
 
-                expect(shadowGroupContract.confirmTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof))
+                expect(shadowGroupContract.confirmTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, fullProof.proof))
                     .to.be.revertedWith("Semaphore__YouAreUsingTheSameNillifierTwice()");
             }
         });
@@ -285,7 +285,7 @@ describe("ShadowGroup", () => {
                 zkeyFilePath
             });
 
-            expect(shadowGroupContract.confirmTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof))
+            expect(shadowGroupContract.confirmTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, fullProof.proof))
                 .to.be.revertedWith("Semaphore__MerkleTreeRootIsNotPartOfTheGroup()");
         });
     });
@@ -340,7 +340,7 @@ describe("ShadowGroup", () => {
                     zkeyFilePath
                 });
 
-                await shadowGroupContract.confirmTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof);
+                await shadowGroupContract.confirmTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, fullProof.proof);
             }
         });
 
@@ -354,7 +354,7 @@ describe("ShadowGroup", () => {
                     zkeyFilePath
                 });
 
-                await shadowGroupContract.revokeTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof);
+                await shadowGroupContract.revokeTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, fullProof.proof);
 
                 const transaction = await shadowGroupContract.transactions(0);
                 expect(transaction.numRevocations).to.eq(i + 1);
@@ -371,7 +371,7 @@ describe("ShadowGroup", () => {
                     zkeyFilePath
                 });
 
-                expect(shadowGroupContract.revokeTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof))
+                expect(shadowGroupContract.revokeTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, fullProof.proof))
                     .to.be.revertedWith("Semaphore__YouAreUsingTheSameNillifierTwice()");
             }
         });
@@ -389,7 +389,7 @@ describe("ShadowGroup", () => {
                 zkeyFilePath
             });
 
-            expect(shadowGroupContract.revokeTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof))
+            expect(shadowGroupContract.revokeTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, fullProof.proof))
                 .to.be.revertedWith("Semaphore__MerkleTreeRootIsNotPartOfTheGroup()");
         });
     });
@@ -451,7 +451,7 @@ describe("ShadowGroup", () => {
                     zkeyFilePath
                 });
 
-                await shadowGroupContract.confirmTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof);
+                await shadowGroupContract.confirmTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, fullProof.proof);
             }
         });
 
