@@ -7,6 +7,7 @@ contract ShadowGroup {
     error TxDoesNotExist();
     error TxAleadyExecuted();
     error InvalidQuorum();
+    error TransactionRevoked();
     error QuorumNotReached();
 
     ISemaphore public semaphore;
@@ -19,7 +20,8 @@ contract ShadowGroup {
         uint256 value;
         bytes data;
         bool executed;
-        uint numConfirmations;
+        uint32 numConfirmations;
+        uint32 numRevocations;
     }
 
     Transaction[] public transactions;
@@ -79,7 +81,8 @@ contract ShadowGroup {
             value: _value,
             data: _data,
             executed: false,
-            numConfirmations: 0
+            numConfirmations: 0,
+            numRevocations: 0
         }));
     }
 
@@ -96,22 +99,22 @@ contract ShadowGroup {
         transactions[_txIndex].numConfirmations += 1;
     }
 
-    function revokeConfirmation(
+    function revokeTransaction(
         uint _txIndex,
         uint256 _merkleTreeRoot,
         uint256 _nullifierHash,
         uint256 _externalNullifier,
         uint256[8] calldata _proof
     ) txExists(_txIndex) txNotExecuted(_txIndex) public {
-        require(transactions[_txIndex].numConfirmations > 0, "tx has no confirmations yet");
-
         uint256 signal = uint256(keccak256(abi.encodePacked(false)));
         semaphore.verifyProof(groupID, _merkleTreeRoot, signal, _nullifierHash, _externalNullifier, _proof);
 
-        transactions[_txIndex].numConfirmations -= 1;
+        transactions[_txIndex].numRevocations += 1;
     }
 
     function executeTransaction(uint _txIndex) txExists(_txIndex) txNotExecuted(_txIndex) public {
+        if (transactions[_txIndex].numRevocations >= quorum) revert TransactionRevoked();
+
         Transaction storage transaction = transactions[_txIndex];
         if (transaction.numConfirmations < quorum) revert QuorumNotReached();
 

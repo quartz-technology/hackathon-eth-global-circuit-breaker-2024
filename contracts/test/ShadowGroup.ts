@@ -290,7 +290,7 @@ describe("ShadowGroup", () => {
         });
     });
 
-    describe("# revokeConfirmation", () => {
+    describe("# revokeTransaction", () => {
         const wasmFilePath = `${config.paths.build["snark-artifacts"]}/semaphore.wasm`;
         const zkeyFilePath = `${config.paths.build["snark-artifacts"]}/semaphore.zkey`;
 
@@ -354,10 +354,10 @@ describe("ShadowGroup", () => {
                     zkeyFilePath
                 });
 
-                await shadowGroupContract.revokeConfirmation(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof);
+                await shadowGroupContract.revokeTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof);
 
                 const transaction = await shadowGroupContract.transactions(0);
-                expect(transaction.numConfirmations).to.eq(ownerIdentityCommitments.length - i - 1);
+                expect(transaction.numRevocations).to.eq(i + 1);
             }
         });
 
@@ -371,7 +371,7 @@ describe("ShadowGroup", () => {
                     zkeyFilePath
                 });
 
-                expect(shadowGroupContract.revokeConfirmation(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof))
+                expect(shadowGroupContract.revokeTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof))
                     .to.be.revertedWith("Semaphore__YouAreUsingTheSameNillifierTwice()");
             }
         });
@@ -389,7 +389,7 @@ describe("ShadowGroup", () => {
                 zkeyFilePath
             });
 
-            expect(shadowGroupContract.revokeConfirmation(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof))
+            expect(shadowGroupContract.revokeTransaction(0, fullProof.merkleTreeRoot, fullProof.nullifierHash, externalNullifier, fullProof.proof))
                 .to.be.revertedWith("Semaphore__MerkleTreeRootIsNotPartOfTheGroup()");
         });
     });
