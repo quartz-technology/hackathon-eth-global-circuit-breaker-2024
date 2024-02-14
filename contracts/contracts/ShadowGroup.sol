@@ -123,6 +123,5 @@ contract ShadowGroup {
         require(success, "tx failed");
     }
 
-    receive() external payable {
-    }
+    fallback() external payable {}
 }
