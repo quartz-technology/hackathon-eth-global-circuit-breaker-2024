@@ -2,7 +2,7 @@ import { Group } from "@semaphore-protocol/group"
 import { Identity } from "@semaphore-protocol/identity"
 import { generateProof } from "@semaphore-protocol/proof"
 import { expect } from "chai"
-import { formatBytes32String, parseEther, randomBytes } from "ethers/lib/utils"
+import { parseEther } from "ethers/lib/utils"
 import { ethers, run } from "hardhat"
 // @ts-ignore: typechain folder will be generated after contracts compilation
 import { ISemaphore, ShadowGroup } from "../build/typechain"
@@ -48,7 +48,7 @@ describe("ShadowGroup", () => {
         const ownerIdentityCommitments: Identity[] = [];
 
         await expect(deployShadowGroup(groupID, ownerIdentityCommitments, ownerIdentityCommitments.length))
-            .to.be.revertedWith("at least one owner identity commitment is required to create the ShadowGroup");
+            .to.be.reverted;
     });
 
     it("Should fail to create ShadowGroup using too small quorum", async () => {

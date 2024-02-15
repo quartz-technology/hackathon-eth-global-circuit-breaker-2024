@@ -16,9 +16,9 @@ task("deploy", "Deploy a ShadowGroup contract")
             { ethers, run }
         ) => {
             if (!semaphoreAddress) {
-                const { semaphore } = await run("deploy:semaphore", { logs: false });
-    
-                semaphoreAddress = semaphore.address
+                const { semaphore } = await run("deploy:semaphore", { logs });
+
+                semaphoreAddress = semaphore.address;
             }
 
             const ShadowGroupFactory = await ethers.getContractFactory("ShadowGroup");
