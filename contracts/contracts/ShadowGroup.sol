@@ -4,11 +4,13 @@ pragma solidity 0.8.4;
 import "@semaphore-protocol/contracts/interfaces/ISemaphore.sol";
 
 contract ShadowGroup {
+    error InvalidInitialOwners();
     error TxDoesNotExist();
     error TxAleadyExecuted();
     error InvalidQuorum();
     error TransactionRevoked();
     error QuorumNotReached();
+    error TxExecutionFailed();
 
     ISemaphore public semaphore;
     uint256 public groupID;
@@ -42,14 +44,9 @@ contract ShadowGroup {
         uint256[] memory _ownersIdentityCommitments,
         uint256 _quorum
     ) {
-        require(
-            _ownersIdentityCommitments.length > 0,
-            "at least one owner identity commitment is required to create the ShadowGroup"
-        );
+        if (_ownersIdentityCommitments.length == 0) revert InvalidInitialOwners();
 
-        if (_quorum == 0 || _quorum > _ownersIdentityCommitments.length) {
-            revert InvalidQuorum();
-        }
+        if (_quorum == 0 || _quorum > _ownersIdentityCommitments.length) revert InvalidQuorum();
 
         semaphore = ISemaphore(_semaphoreAddress);
         groupID = _groupID;
@@ -72,7 +69,7 @@ contract ShadowGroup {
         uint256[8] calldata _proof
     ) public {
         uint256 signal = uint256(keccak256(abi.encodePacked(_to, _value, _data)));
-        // TODO: Explain why the externalNullifier is calculated this way (using the transacitons.len as a challenge).
+        // TODO: Explain why the externalNullifier is calculated this way (using the transactions.len as a challenge).
         uint256 externalNullifier = uint256(keccak256(abi.encodePacked(transactions.length, signal)));
 
         semaphore.verifyProof(groupID, _merkleTreeRoot, signal, _nullifierHash, externalNullifier, _proof);
@@ -126,7 +123,8 @@ contract ShadowGroup {
         (bool success, ) = transaction.to.call{value: transaction.value}(
             transaction.data
         );
-        require(success, "tx failed");
+
+        if (!success) revert TxExecutionFailed();
     }
 
     fallback() external payable {}
