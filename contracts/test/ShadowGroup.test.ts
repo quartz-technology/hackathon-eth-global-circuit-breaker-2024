@@ -683,5 +683,12 @@ describe("ShadowGroup", () => {
             await expect(shadowGroup.executeTransaction(0))
                 .to.be.revertedWithCustomError(shadowGroup, "TxRevoked");
         });
+
+        it("Should get all the transactions", async () => {
+            const { shadowGroup } = await loadFixture(deployShadowGroupWithOneConfirmedTransactionFixture);
+
+            const transactions = await shadowGroup.getTransactions();
+            expect(transactions.length).to.equal(1);
+        });
     });
 });

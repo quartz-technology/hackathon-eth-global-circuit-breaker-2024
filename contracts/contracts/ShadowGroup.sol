@@ -128,4 +128,8 @@ contract ShadowGroup {
     }
 
     fallback() external payable {}
+
+    function getTransactions() public view returns (Transaction[] memory) {
+        return transactions;
+    }
 }
