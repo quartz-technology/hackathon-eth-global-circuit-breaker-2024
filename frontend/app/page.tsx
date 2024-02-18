@@ -70,14 +70,14 @@ function Welcome() {
 
 function Groups() {
   const [isMounted, setIsMounted] = React.useState(false);
-  const [identityTrapdoor, setIdentityTrapdoor] = React.useState("");
-  const [identityNullifier, setIdentityNullifier] = React.useState("");
-  const [identity, setIdentity] = React.useState<Identity>(null);
+  const [identityTrapdoor, setIdentityTrapdoor] = React.useState("180512197687968165521390983753418059200107913727679459747533292821770956009");
+  const [identityNullifier, setIdentityNullifier] = React.useState("85608426462602084969316958390611904992964179217271747601238855886183306810");
+  const [identity, setIdentity] = React.useState<Identity>();
   const [groups, setGroups] = React.useState<GroupResponse[]>([]);
 
   const syncSemaphoreGroups = async (trapdoor: string, nullifier: string) => {
-    const semaphoreSubgraph = new SemaphoreSubgraph(SupportedNetwork.ARBITRUM_GOERLI);
-    const fetchedGroups = await semaphoreSubgraph.getGroups();
+    const semaphoreSubgraph = new SemaphoreSubgraph(SupportedNetwork.SEPOLIA);
+    const fetchedGroups = await semaphoreSubgraph.getGroups({ members: true });
 
     try {
       const identity = new Identity(JSON.stringify([trapdoor, nullifier]));
@@ -143,15 +143,24 @@ function Groups() {
         />
       </div>
       <div className="flex flex-col w-full max-w-2xl">
-        <h1 className='m-2 font-bold'>Your shadow groups:</h1>
-        <GroupCreation identiyCommitment={identity?.commitment.toString()} />
+        <div className='flex'>
+          <h1 className='m-2 font-bold'>Your shadow groups:</h1>
+          <Button onClick={async () => {
+            await syncSemaphoreGroupsCallback();
+          }}>
+            🔄
+          </Button>
+        </div>
+        <GroupCreation identiyCommitment={identity?.commitment.toString() || ""} />
         {groups.map((group, i) => (
           <GroupPreview
+            identity={identity || new Identity("should never use me lol")}
+            identitiesCommitments={group.members || []}
+            groupID={group.id || ""}
             key={i}
             address={group.admin || ""}
           />
         ))}
-        <GroupPreview address="0x0000000000000000000000000000000000000000" />
       </div>
     </div>
   );

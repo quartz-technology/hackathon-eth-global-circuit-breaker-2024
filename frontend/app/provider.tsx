@@ -8,7 +8,7 @@ import {
   getDefaultConfig,
   darkTheme,
 } from '@rainbow-me/rainbowkit';
-import { arbitrumGoerli } from 'wagmi/chains';
+import { sepolia } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiProvider } from 'wagmi';
 
@@ -20,7 +20,7 @@ const config = getDefaultConfig({
   wallets: [
     ...wallets
   ],
-  chains: [arbitrumGoerli],
+  chains: [sepolia],
   ssr: true,
 });
 
