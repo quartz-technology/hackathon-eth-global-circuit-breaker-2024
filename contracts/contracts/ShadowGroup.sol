@@ -6,9 +6,9 @@ import "@semaphore-protocol/contracts/interfaces/ISemaphore.sol";
 contract ShadowGroup {
     error InvalidInitialOwners();
     error TxDoesNotExist();
-    error TxAleadyExecuted();
+    error TxAlreadyExecuted();
     error InvalidQuorum();
-    error TransactionRevoked();
+    error TxRevoked();
     error QuorumNotReached();
     error TxExecutionFailed();
 
@@ -34,7 +34,7 @@ contract ShadowGroup {
     }
 
     modifier txNotExecuted(uint _txIndex) {
-        if (transactions[_txIndex].executed) revert TxAleadyExecuted();
+        if (transactions[_txIndex].executed) revert TxAlreadyExecuted();
         _;
     }
 
@@ -113,7 +113,7 @@ contract ShadowGroup {
     }
 
     function executeTransaction(uint _txIndex) txExists(_txIndex) txNotExecuted(_txIndex) public {
-        if (transactions[_txIndex].numRevocations >= quorum) revert TransactionRevoked();
+        if (transactions[_txIndex].numRevocations >= quorum) revert TxRevoked();
 
         Transaction storage transaction = transactions[_txIndex];
         if (transaction.numConfirmations < quorum) revert QuorumNotReached();
