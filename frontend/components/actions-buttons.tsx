@@ -1,6 +1,6 @@
 import React from "react";
 
-export const EditIcon = (props) => (
+export const EditIcon = (props: any) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -38,7 +38,7 @@ export const EditIcon = (props) => (
   </svg>
 );
 
-export const DeleteIcon = (props) => (
+export const DeleteIcon = (props: any) => (
     <svg
       aria-hidden="true"
       fill="none"
@@ -88,7 +88,7 @@ export const DeleteIcon = (props) => (
 );
 
   
-export const EyeIcon = (props) => (
+export const EyeIcon = (props: any) => (
     <svg
         aria-hidden="true"
         fill="none"
@@ -116,7 +116,7 @@ export const EyeIcon = (props) => (
     </svg>
 );
 
-export const CheckIcon = (props) => (
+export const CheckIcon = (props: any) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -137,7 +137,7 @@ export const CheckIcon = (props) => (
   </svg>
 );
 
-export const CrossIcon = (props) => (
+export const CrossIcon = (props: any) => (
   <svg
     aria-hidden="true"
     fill="none"
@@ -165,7 +165,7 @@ export const CrossIcon = (props) => (
   </svg>
 );
 
-export const TriangleIcon = (props) => (
+export const TriangleIcon = (props: any) => (
   <svg
     aria-hidden="true"
     fill="none"

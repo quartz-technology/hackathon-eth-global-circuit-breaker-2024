@@ -14,6 +14,10 @@ import {
     SliderValue,
 } from "@nextui-org/react";
 import * as React from 'react';
+import { createWalletClient, custom, Hex } from 'viem';
+import { sepolia } from 'viem/chains';
+import { privateKeyToAccount } from 'viem/accounts';
+import shadowGroup from '@/components/shadow-group.json';
 
 export interface IGroupCreationProps {
     identiyCommitment: string;
@@ -37,7 +41,20 @@ export default function GroupCreation(props: IGroupCreationProps) {
     };
 
     const createNewShadowGroup = async () => {
-        // TODO.
+        const walletClient = createWalletClient({
+            chain: sepolia,
+            transport: custom(window.ethereum)
+        });
+        const account = privateKeyToAccount("0x4c88eccb34856d59199d14fee223d27b4cabffe1de5b2f5075765c92eab784b5");
+
+        const hash = await walletClient.deployContract({
+            abi: shadowGroup.abi,
+            account,
+            args: ["0x3889927F0B5Eb1a02C6E2C20b39a1Bd4EAd76131", groupID, groupMembers, quorum],
+            bytecode: shadowGroup.bytecode as Hex,
+        });
+
+        console.log(hash);
     };
 
     return (
