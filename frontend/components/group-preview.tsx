@@ -52,7 +52,7 @@ export default function GroupPreview({ address, identity, identitiesCommitments,
         const group = new Group(groupID, 20, identitiesCommitments);
 
         const generatedSignal = generateSubmitTransactionSignal(newTxTo, newTxValue, newTxData);
-        const generatedExternalNullifier = generateSubmitTransactionExternalNullifier(0, generatedSignal);
+        const generatedExternalNullifier = generateSubmitTransactionExternalNullifier(transactions.length, generatedSignal);
 
         const { merkleTreeRoot, nullifierHash, proof } = await generateProof(
             identity,
@@ -62,7 +62,7 @@ export default function GroupPreview({ address, identity, identitiesCommitments,
         );
 
         await contract.write.submitTransaction([newTxTo, newTxValue, newTxData, merkleTreeRoot, nullifierHash, proof]);
-    }, [newTxTo, newTxValue, newTxData, groupID, identity, identitiesCommitments, contract]);
+    }, [newTxTo, newTxValue, newTxData, groupID, identity, identitiesCommitments, contract, transactions]);
 
     React.useEffect(() => {
         (async () => {
